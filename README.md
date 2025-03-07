@@ -4,7 +4,7 @@ Find the organic development of news
 Powered by LLM.
 
 ## Example
-
+```
 Querying news from 2025-03-04 to 2025-03-06
 
 Page 1 article dates range:
@@ -1361,3 +1361,4 @@ URL: https://wgnradio.com/wgn-plus/walter-jacobsons-perspective/walter-jacobsons
 Description: He is quite a character, that Elon Musk, believing it's true what the media says, that he is the richest person in the world. And now Elon Musk is behaving like he thinks he's President of the United States. And I believe it's fair for me to say that because I've been listening to Mr. Musk on the radio and watching him on television ordering, yes ordering, as only the president or someone empowered by the president can order hundreds of thousands of government employees to make and keep a record day by day, every day, a record of what a government employee is doing so that Musk and Trump can know when work time is being wasted and they can play politics with it. While those popular Tesla cars that Mr. Musk is producing and selling are being described by people who buy and drive them as dangerous. Windshield wipers and seat belts not working. Engine noises too loud and distracting. Escalating speeds too sudden and scary. Musk is collecting those records and firing thousands of government employees to the tune of Musk speeches about saving taxpayer dollars, while so many thousands more who are not being fired are now quitting their Tesla jobs. And I, as a reporter, Mr. Musk, am waiting to hear on the radio and to watch on TV whatever it is that you and your pal in the Oval Office of the White House are planning to do next.
 --------------------------------------------------------------------------------
 
+```
