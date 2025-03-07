@@ -6,9 +6,33 @@ import os
 from typing import List, Dict
 from collections import defaultdict
 from dotenv import load_dotenv
+import sys
 
 # Load environment variables from .env file
 load_dotenv()
+
+# Set up logging to both file and console
+class TeeLogger:
+    def __init__(self, filename):
+        self.terminal = sys.stdout
+        self.log_file = open(filename, 'w', encoding='utf-8')  # 'w' mode overwrites the file
+
+    def write(self, message):
+        self.terminal.write(message)
+        self.log_file.write(message)
+        self.log_file.flush()  # Ensure immediate writing to file
+
+    def flush(self):
+        self.terminal.flush()
+        self.log_file.flush()
+
+# Create logs directory if it doesn't exist
+os.makedirs('logs', exist_ok=True)
+
+# Set up the logger with current timestamp
+current_time = datetime.now().strftime('%Y%m%d_%H%M%S')
+log_filename = f'logs/news_analysis_{current_time}.log'
+sys.stdout = TeeLogger(log_filename)
 
 # API Configuration from environment variables
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
