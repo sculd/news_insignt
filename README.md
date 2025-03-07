@@ -4,6 +4,7 @@ Find the organic development of news
 Powered by LLM.
 
 ## Example
+### Elon Musk
 ```
 Querying news from 2025-03-05 to 2025-03-07
 
@@ -351,5 +352,72 @@ Source: Press of Atlantic City
 Published: 2025-03-07T15:03:50Z
 URL: https://pressofatlanticcity.com/news/nation-world/government-politics/article_00f28948-faa9-11ef-aa58-3354a4ec1a5d.html
 Description: Thirty climate protestors staged a sit-in at Tesla's Westfield Shepherd's Bush showroom, unfurling a banner that read Abolish Billionaires. The protest targeted Elon Musk, accusing him of exacerbating...
+--------------------------------------------------------------------------------
+```
+
+
+### Eric Schmidt
+```
+Querying news from 2025-02-05 to 2025-03-07
+
+Page 1 article dates range:
+Oldest: 2025-02-26T00:14:04Z
+Newest: 2025-03-07T08:28:57Z
+Fetched page 1, found 7 relevant articles on this page...
+
+Page 2 article dates range:
+Oldest: 2025-02-13T06:37:28Z
+Newest: 2025-02-18T20:47:32Z
+Fetched page 2, found 3 relevant articles on this page...
+
+Fetched all the article with 10
+
+Total articles with '['Eric', 'Schmidt']' in title: 10
+
+=== Benchmark Article ===
+
+Article:
+Title: Ex-Google CEO Eric Schmidt Warns If West Doesn't Get Its Act Together On Open Source AI, China Will Become The Leader: 'If We Don't Do Something...' - Alphabet (NASDAQ:GOOG), Alphabet (NASDAQ:GOOGL)
+Source: Benzinga
+Published: 2025-02-13T06:37:28Z
+URL: https://www.benzinga.com/media/25/02/43683647/ex-google-ceo-eric-schmidt-warns-if-west-doesnt-get-its-act-together-on-open-source-ai-china-will-become-the-leader-if-we-dont-do-something
+Description: Former Google CEO Eric Schmidt has cautioned that if Western nations fail to prioritize open-source artificial intelligence, China will take the lead.
+
+What Happened: Speaking at the AI Action Summit ...
+
+=== Analyzing Related Articles ===
+Processing article 9/9...
+
+
+=== CATEGORY STATISTICS ===
+Total articles analyzed: 9
+UNRELATED: 7 articles (77.8%)
+SUPPORTING: 1 articles (11.1%)
+IDENTICAL: 1 articles (11.1%)
+==============================
+
+
+=== SUPPORTING ARTICLES (1) ===
+
+Article 1:
+Title: Eric Schmidt's $10 Million Bet on A.I. Safety
+Source: Observer
+Published: 2025-02-18T20:47:32Z
+URL: https://observer.com/2025/02/eric-schmidt-awards-ai-researchers-10m-study-safety/
+Description: A new program funded by Schmidt will offer grants, compute and access to frontier A.I. models.
+
+Investing in the future of A.I. is nothing new for Eric Schmidt, who has spent the past few years backin...
+--------------------------------------------------------------------------------
+
+=== IDENTICAL ARTICLES (1) ===
+
+Article 1:
+Title: AI could be used for a 'bad biological attack from some evil person,' ex-Google CEO Eric Schmidt warns
+Source: Business Insider
+Published: 2025-02-13T12:52:16Z
+URL: https://www.businessinsider.com/eric-schmidt-ai-risks-biological-attacks-rogue-states-2025-2
+Description: World leaders discussed the risks and opportunities posed by AI at a summit in Paris this week.
+
+Former Google CEO Eric Schmidt warned of the potential threat posed by AI in the hands of hostile state...
 --------------------------------------------------------------------------------
 ```

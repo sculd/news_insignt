@@ -43,7 +43,7 @@ NEWSAPI_AI_KEY = os.getenv('NEWSAPI_AI_KEY')
 if not NEWSAPI_AI_KEY:
     raise ValueError("NEWSAPI_AI_KEY environment variable is not set")
 
-def compare_with_benchmark(benchmark_article: Dict, article: Dict) -> bool:
+def compare_with_benchmark(keyword: str,benchmark_article: Dict, article: Dict) -> bool:
     """Compare an article with the benchmark article using OpenAI."""
     try:
         # Initialize OpenAI client
@@ -51,7 +51,7 @@ def compare_with_benchmark(benchmark_article: Dict, article: Dict) -> bool:
         
         # Prepare the prompt
         prompt = f"""
-        Compare these two news articles about Elon Musk:
+        Compare these two news articles about {keyword}:
 
         BENCHMARK ARTICLE:
         Title: {benchmark_article['title']}
@@ -71,7 +71,7 @@ def compare_with_benchmark(benchmark_article: Dict, article: Dict) -> bool:
         Then classify their relationship as ONE of these categories:
 
         - 'identical': The articles must cover the EXACT SAME specific incident or event
-          Example: Both articles reporting on "Elon Musk's wealth decreasing by X billion dollars due to Tesla stock decline"
+          Example: Both articles reporting on "{keyword}'s wealth decreasing by X billion dollars due to Tesla stock decline"
           Counter-example: One about Tesla stock decline and another about SpaceX successes, even if both mention wealth
         
         - 'supporting': Articles about different but directly related developments that support or align with the benchmark's SPECIFIC TOPIC
@@ -80,12 +80,12 @@ def compare_with_benchmark(benchmark_article: Dict, article: Dict) -> bool:
         - 'contradicting': Articles that directly oppose or contradict the benchmark's specific claims about the same topic
           Example: If benchmark says "Musk's wealth decreased", a contradicting article might claim "Musk's wealth actually increased"
         
-        - 'unrelated': Articles about different events or topics involving Elon Musk but not directly related to the benchmark's SPECIFIC TOPIC
+        - 'unrelated': Articles about different events or topics involving {keyword} but not directly related to the benchmark's SPECIFIC TOPIC
           Example: If benchmark is about "Musk's wealth and Tesla stock", articles about "Musk's social media posts", "political activities", or "SpaceX" are unrelated
 
         Key rules:
-        1. Focus on the SPECIFIC TOPIC of each article, not just that they both involve Elon Musk
-        2. 'supporting' requires direct topical relationship to the benchmark's main subject (not just about Elon Musk)
+        1. Focus on the SPECIFIC TOPIC of each article, not just that they both involve {keyword}
+        2. 'supporting' requires direct topical relationship to the benchmark's main subject (not just about {keyword})
         3. Time proximity alone doesn't make articles related - the specific topic must be connected
         4. Different developments in the same broader story are only 'supporting' if they directly relate to the benchmark's main topic
         5. When in doubt between 'supporting' and 'unrelated', favor 'unrelated' unless there's a clear topical connection
@@ -119,18 +119,21 @@ def print_article(article: Dict, index: int = None):
     print(f"URL: {article['url']}")
     print(f"Description: {article['description'][:200]}...")
 
-def fetch_elon_news():
+def fetch_keyword_news():
     # API configuration
     base_url = 'https://eventregistry.org/api/v1/article/getArticles'
     
     # Calculate date for last 7 days of news
     today = datetime.now()
-    week_ago = today - timedelta(days=2)
+    week_ago = today - timedelta(days=30)
     
+    keyword = "Eric Schmidt"
+    filter_words = ["Eric", "Schmidt"]
+
     # Parameters for the API request
     params = {
         "action": "getArticles",
-        "keyword": "Elon Musk",
+        "keyword": keyword,
         "articlesPage": 1,
         "articlesCount": 100,
         "articlesSortBy": "date",
@@ -148,7 +151,8 @@ def fetch_elon_news():
     print(f"\nQuerying news from {params['dateStart']} to {params['dateEnd']}")
 
     try:
-        elon_articles = []
+        articles = []
+        topic_articles = []
         page = 1
         
         while True:
@@ -165,8 +169,7 @@ def fetch_elon_news():
                 print(f"Error in API response on page {page}: {news_data.get('message', 'No error message')}")
                 break
             
-            # Filter and add articles with "Elon" in title
-            page_elon_articles = [
+            page_articles = [
                 {
                     'title': article['title'],
                     'description': article.get('body', article.get('description', '')),
@@ -175,53 +178,60 @@ def fetch_elon_news():
                     'url': article['url']
                 }
                 for article in news_data['articles']['results']
-                if 'elon' in article['title'].lower()
             ]
-            
+            articles.extend(page_articles)
+
+            # Filter and add articles with keyword (e.g. "Elon") in title
+            page_topic_articles = [
+                page_article
+                for page_article in page_articles
+                if all([filter_word.lower() in page_article['title'].lower() for filter_word in filter_words])
+            ]
+            topic_articles.extend(page_topic_articles)
+
             # Debug: Print date range of articles found
-            if page_elon_articles:
-                oldest = min(page_elon_articles, key=lambda x: x['publishedAt'])
-                newest = max(page_elon_articles, key=lambda x: x['publishedAt'])
+            if page_topic_articles:
+                oldest = min(page_topic_articles, key=lambda x: x['publishedAt'])
+                newest = max(page_topic_articles, key=lambda x: x['publishedAt'])
                 print(f"\nPage {page} article dates range:")
                 print(f"Oldest: {oldest['publishedAt']}")
                 print(f"Newest: {newest['publishedAt']}")
-            
-            elon_articles.extend(page_elon_articles)
-            
+                        
             # Print progress
-            print(f"\rFetched page {page}, found {len(page_elon_articles)} relevant articles on this page...")
+            print(f"\rFetched page {page}, found {len(page_topic_articles)} relevant articles on this page...")
             
             # Check if we've got all articles or reached the end
             if len(news_data['articles']['results']) < params['articlesCount']:
+                print(f"\nFetched all the article with {len(topic_articles)}")
                 break
                 
             page += 1
+
+            if len(topic_articles) > 80: # limit to n articles for now
+                print(f"\nReached maximum article limit with {len(topic_articles)}")
+                break
             
             # Add a small delay to avoid rate limiting
             time.sleep(0.1)
 
-            if page > 5:  # Limit to 5 pages for now
-                print("\nReached maximum page limit")
-                break
-        
-        print(f"\nTotal articles with 'Elon' in title: {len(elon_articles)}")
+        print(f"\nTotal articles with '{filter_words}' in title: {len(topic_articles)}")
             
-        if not elon_articles:
-            print("No articles with 'Elon' in the title found.")
+        if not topic_articles:
+            print(f"No articles with '{filter_words}' in the title found.")
             return
 
         # Get the benchmark (last) article
-        benchmark_article = elon_articles[-1]
+        benchmark_article = topic_articles[-1]
         print("\n=== Benchmark Article ===")
         print_article(benchmark_article)
         print("\n=== Analyzing Related Articles ===")
 
         # Compare other articles with the benchmark
         relations = defaultdict(list)
-        total_articles = len(elon_articles) - 1
-        for i, article in enumerate(elon_articles[:-1], 1):  # Exclude the benchmark article
+        total_articles = len(topic_articles) - 1
+        for i, article in enumerate(topic_articles[:-1], 1):  # Exclude the benchmark article
             print(f"\rProcessing article {i}/{total_articles}...", end="")
-            relation = compare_with_benchmark(benchmark_article, article)
+            relation = compare_with_benchmark(keyword, benchmark_article, article)
             relations[relation].append(article)
         print("\n")  # New line after progress indicator
 
@@ -247,4 +257,4 @@ def fetch_elon_news():
         print(f"Error fetching news: {e}")
 
 if __name__ == "__main__":
-    fetch_elon_news() 
+    fetch_keyword_news() 
