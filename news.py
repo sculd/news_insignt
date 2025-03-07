@@ -63,31 +63,32 @@ def compare_with_benchmark(benchmark_article: Dict, article: Dict) -> bool:
         Description: {article['description']}
         Published: {article['publishedAt']}
 
-        First, identify the SPECIFIC EVENT in each article:
-        1. What exactly happened?
-        2. When did it happen?
-        3. Who was involved?
+        First, identify the SPECIFIC MAIN TOPIC in each article:
+        1. What exactly is the primary subject matter?
+        2. What specific event or development is being reported?
+        3. Who was involved and how?
 
         Then classify their relationship as ONE of these categories:
 
         - 'identical': The articles must cover the EXACT SAME specific incident or event
-          Example: Both articles reporting on "DOGE using U.S. Marshals to take over an agency on Thursday"
-          Counter-example: Articles about different aspects of DOGE's activities, even if from the same day
+          Example: Both articles reporting on "Elon Musk's wealth decreasing by X billion dollars due to Tesla stock decline"
+          Counter-example: One about Tesla stock decline and another about SpaceX successes, even if both mention wealth
         
-        - 'supporting': Articles about different but related events that support or align with the benchmark's narrative
-          Example: If benchmark is about DOGE taking over an agency, a supporting article might be about legal justification for the takeover
+        - 'supporting': Articles about different but directly related developments that support or align with the benchmark's SPECIFIC TOPIC
+          Example: If benchmark is about "Tesla stock decline impacting Musk's wealth", a supporting article might be about "reasons for Tesla's stock decline" or "analysis of Musk's changing wealth"
         
-        - 'contradicting': Articles about the same specific event but presenting opposing views or criticisms
-          Example: One article supporting the agency takeover, another condemning it as illegal
+        - 'contradicting': Articles that directly oppose or contradict the benchmark's specific claims about the same topic
+          Example: If benchmark says "Musk's wealth decreased", a contradicting article might claim "Musk's wealth actually increased"
         
-        - 'unrelated': Articles about different events or topics, even if they involve the same organization (DOGE)
-          Example: If benchmark is about agency takeover, articles about DOGE's general authority or other activities are unrelated
+        - 'unrelated': Articles about different events or topics involving Elon Musk but not directly related to the benchmark's SPECIFIC TOPIC
+          Example: If benchmark is about "Musk's wealth and Tesla stock", articles about "Musk's social media posts", "political activities", or "SpaceX" are unrelated
 
         Key rules:
-        1. For 'identical', the articles must describe the EXACT SAME incident, not just related developments
-        2. Time proximity alone doesn't make articles identical - the specific event must match
-        3. Different developments in the same story should be 'supporting' or 'unrelated', not 'identical'
-        4. 'contradicting' requires opposing views about the SAME specific event
+        1. Focus on the SPECIFIC TOPIC of each article, not just that they both involve Elon Musk
+        2. 'supporting' requires direct topical relationship to the benchmark's main subject (not just about Elon Musk)
+        3. Time proximity alone doesn't make articles related - the specific topic must be connected
+        4. Different developments in the same broader story are only 'supporting' if they directly relate to the benchmark's main topic
+        5. When in doubt between 'supporting' and 'unrelated', favor 'unrelated' unless there's a clear topical connection
         
         Reply with ONLY ONE word: identical, supporting, contradicting, or unrelated.
         """
@@ -116,7 +117,7 @@ def print_article(article: Dict, index: int = None):
     print(f"Source: {article['source']['name']}")
     print(f"Published: {article['publishedAt']}")
     print(f"URL: {article['url']}")
-    print(f"Description: {article['description']}")
+    print(f"Description: {article['description'][:200]}...")
 
 def fetch_elon_news():
     # API configuration
